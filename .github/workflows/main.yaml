@@ -1,0 +1,40 @@
+# This workflow will install dependencies and publish the package
+
+name: Bump
+
+on:
+  push:
+    branches: [ main, release ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14.2.0
+          registry-url: https://npm.pkg.github.com/
+      - name: Cache NPM dependencies
+        uses: actions/cache@v2
+        with:
+          path: ./node_modules
+          key: ${{ runner.OS }}-npm-dep-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-dep-cache-${{ hashFiles('**/package-lock.json') }}
+            ${{ runner.OS }}-npm-dep-cache
+      - run: npm i -g yarn@1.22.10
+      - run: ls && yarn cache clean --force && yarn i --verbose && ls
+      - name: "cat package.json"
+        run: cat ./package.json
+      - name: "Automated Version Bump"
+        uses: "phips28/gh-action-bump-version@master"
+        with:
+          tag-prefix: ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: contains('refs/heads/main', github.ref)
+      - name: "cat package.json"
+        run: cat ./package.json
