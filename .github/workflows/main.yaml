@@ -4,7 +4,7 @@ name: Bump
 
 on:
   push:
-    branches: [ main, release ]
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -32,6 +32,8 @@ jobs:
         uses: "phips28/gh-action-bump-version@master"
         with:
           tag-prefix: ''
+          default: prerelease
+          preid: 'dev'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: contains('refs/heads/main', github.ref)
