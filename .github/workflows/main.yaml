@@ -33,7 +33,7 @@ jobs:
         with:
           tag-prefix: ''
           default: prerelease
-          preid: 'dev'
+          rc-wording:  'major,feat,fix,patch,refactor'  
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: contains('refs/heads/main', github.ref)
